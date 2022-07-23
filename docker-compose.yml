@@ -1,0 +1,28 @@
+version: "3"
+services:
+
+  mariadb:
+    image: mariadb:10.7
+    volumes:
+      - ~/mariadb_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=z29t45g3
+      - MYSQL_PASSWORD=wikijsrocks
+      - MYSQL_USER=wikijs
+      - MYSQL_DATABASE=wiki
+    restart: unless-stopped
+
+  wiki:
+    image: ghcr.io/requarks/wiki:2
+    depends_on:
+      - mariadb
+    environment:
+      DB_TYPE: mariadb
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USER: wikijs
+      DB_PASS: wikijsrocks
+      DB_NAME: wiki
+    restart: unless-stopped
+    ports:
+      - "80:3000"
